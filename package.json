@@ -1,0 +1,35 @@
+{
+  "name": "secret-santa-bot",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "A Telegram bot for organizing Secret Santa events",
+  "author": {
+    "name": "Roman Ryzhikov",
+    "email": "general+github@ya.ru"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yagee/secret-santa-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yagee/secret-santa-bot/issues"
+  },
+  "homepage": "https://github.com/yagee/secret-santa-bot#readme",
+  "keywords": [
+    "telegram",
+    "bot",
+    "secret-santa"
+  ],
+  "scripts": {
+    "prettier": "prettier --check --ignore-unknown '**/*'",
+    "prettier:fix": "prettier --write --ignore-unknown '**/*'"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.1"
+  }
+}
