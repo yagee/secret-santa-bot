@@ -265,16 +265,22 @@ bot.onText(/\/shuffle/, async (msg) => {
       }
     }
 
-    fs.writeFile(
-      path.join(relativePath, '/users.json'),
-      JSON.stringify(users, null, 2),
-      (err) => {
-        if (err) console.log(err);
-        else {
-          // console.log('File written successfully\n');
-        }
-      },
-    );
+    const usersFilePath = path.join(relativePath, '/users.json');
+    fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        // Send the file to the admin
+        bot
+          .sendDocument(ADMIN, usersFilePath)
+          .then(() => {
+            console.log('File sent to admin successfully');
+          })
+          .catch((error) => {
+            console.log('Error sending file to admin:', error);
+          });
+      }
+    });
 
     // console.log('Users shuffled successfully');
   }
