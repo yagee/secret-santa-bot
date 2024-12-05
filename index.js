@@ -123,6 +123,11 @@ bot.on('callback_query', function onCallbackQuery(callbackQuery) {
 });
 
 bot.on('message', async (msg) => {
+  const userDir = path.join(relativePath, 'users');
+  if (!fs.existsSync(userDir)) {
+    fs.mkdirSync(userDir);
+  }
+
   if (santaIsOver) {
     return;
   }
