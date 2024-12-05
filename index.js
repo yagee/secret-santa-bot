@@ -12,6 +12,7 @@ dotenv.config({
 
 const ADMIN = process.env['ADMIN_CHAT_ID'];
 const TOKEN = process.env['BOT_TOKEN'];
+const SANTA_IS_OVER = process.env['SANTA_IS_OVER'] === 'true' ? true : false;
 
 const bot = new TelegramBot(TOKEN, {
   polling: true,
@@ -19,7 +20,7 @@ const bot = new TelegramBot(TOKEN, {
 
 const bannedUsers = [];
 
-const santaIsOver = false;
+let santaIsOver = SANTA_IS_OVER;
 
 bot.onText(/\/start/, async (msg, match) => {
   if (santaIsOver) {
@@ -131,10 +132,13 @@ bot.on('message', async (msg) => {
   if (santaIsOver) {
     return;
   }
+
   if (
     msg.text === '/start' ||
     msg.text === '/shuffle' ||
-    msg.text === '/send'
+    msg.text === '/send' ||
+    msg.text === '/reset' ||
+    msg.text === '/end'
   ) {
     return;
   }
@@ -303,5 +307,46 @@ bot.onText(/\/send/, (msg) => {
       }
       bot.sendMessage(user.id, message);
     });
+  }
+});
+
+bot.onText(/\/reset/, (msg) => {
+  if (msg.chat.id == ADMIN) {
+    const usersDir = path.join(relativePath, '/users');
+    const userFiles = fs.readdirSync(usersDir);
+    userFiles.forEach((file) => {
+      fs.unlinkSync(path.join(usersDir, file));
+    });
+
+    fs.unlinkSync(path.join(relativePath, '/users.json'));
+  }
+});
+
+const variableName = 'SANTA_IS_OVER';
+const envPath = path.join(relativePath, '/.env');
+
+bot.onText(/\/end/, (msg) => {
+  if (msg.chat.id == ADMIN) {
+    try {
+      const envContent = fs.existsSync(envPath)
+        ? fs.readFileSync(envPath, 'utf8')
+        : '';
+      const lines = envContent.split('\n');
+
+      let variableFound = false;
+      const updatedLines = lines.map((line) => {
+        if (line.startsWith(`${variableName}=`)) {
+          variableFound = true;
+          const [, value] = line.split('=');
+          const newValue = true;
+          return `${variableName}=${newValue}`;
+        }
+        return line;
+      });
+      fs.writeFileSync(envPath, updatedLines.join('\n'), 'utf8');
+      console.log(`Updated ${variableName} in .env file.`);
+    } catch (error) {
+      console.error(`Error updating ${variableName}:`, error);
+    }
   }
 });
