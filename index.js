@@ -155,12 +155,22 @@ bot.on('message', async (msg) => {
     return;
   }
 
-  const userData = await fs.readFileSync(
-    path.join(relativePath, `users/${chatId}.json`),
-    'utf8',
-  );
+  const filePath = path.join(relativePath, `users/${chatId}.json`);
 
-  const user = JSON.parse(userData);
+  if (!fs.existsSync(filePath)) {
+    console.log(`Файл ${filePath} не существует`);
+    return false;
+  }
+
+  let user;
+
+  try {
+    const userData = fs.readFileSync(filePath, 'utf8');
+    user = JSON.parse(userData);
+  } catch (error) {
+    console.log('Ошибка при чтении файла:', error);
+    return false;
+  }
 
   switch (user.step) {
     case 1:
