@@ -159,6 +159,9 @@ bot.on('message', async (msg) => {
 
   if (!fs.existsSync(filePath)) {
     console.log(`Файл ${filePath} не существует`);
+    bot.sendMessage(chatId, `Привет, чтобы начать нажми /start`, {
+      parse_mode: 'HTML',
+    });
     return false;
   }
 
